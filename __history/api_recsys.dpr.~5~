@@ -1,0 +1,18 @@
+program api_recsys;
+
+uses
+  Vcl.Forms,
+  dm in 'dm.pas' {DataModule1: TDataModule},
+  Principal in 'Principal.pas' {Form3},
+  ProdutosController in 'controller\ProdutosController.pas',
+  LoginController in 'controller\LoginController.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TForm3, Form3);
+  Application.Run;
+end.

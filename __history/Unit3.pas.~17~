@@ -1,0 +1,86 @@
+unit Unit3;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Horse,  System.Json,
+  Horse.Jhonson, Vcl.StdCtrls;
+
+type
+  TForm3 = class(TForm)
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form3: TForm3;
+
+implementation
+
+{$R *.dfm}
+
+uses dm;
+
+procedure TForm3.Button1Click(Sender: TObject);
+begin
+
+    // registrar middleweres
+    THorse.Use(Jhonson());
+
+    THorse.Get('/produtos',
+      procedure(Req: THorseRequest; Res: THorseResponse; Next: TProc)
+
+      var
+        aJson: TJSONArray;
+        oJson: TJSONObject;
+      begin
+
+        DataModule1.CadproTable.Close;
+        DataModule1.CadproTable.SQL.Clear;
+        DataModule1.CadproTable.SQL.Add
+          ('select pdcodpro,pdnome,pdmarca from cadpro where pdmarca = '+ QuotedStr('BIOTEXTIL'));
+        DataModule1.CadproTable.Open;
+
+        if not DataModule1.CadproTable.IsEmpty then
+        begin
+          aJson := TJSONArray.Create;
+          DataModule1.CadproTable.first;
+
+          while not DataModule1.CadproTable.eof do
+          begin
+
+            // DataModule1.CadproTable.Fields[0].AsString;
+            // Montando JSon
+               oJson := TJSONObject.Create;
+            oJson.AddPair('codigo',
+              TJsonNumber.Create(DataModule1.CadproTable.FieldByName('pdcodpro')
+              .AsInteger));
+            oJson.AddPair('nome', DataModule1.CadproTable.FieldByName('pdnome')
+              .AsString);
+            oJson.AddPair('marca', DataModule1.CadproTable.FieldByName
+              ('pdmarca').AsString);
+
+            // add array
+            aJson.AddElement(oJson);
+            DataModule1.CadproTable.Next;
+          end;
+          Res.Send<TJSONArray>(aJson).Status(200);
+        end
+        else
+        begin
+          Res.Send<TJSONObject>(TJSONObject.Create.AddPair('msg', 'Vasio'))
+            .Status(400);
+        end;
+
+      end);
+
+    THorse.Listen(9000);
+    end;
+
+end.

@@ -1,0 +1,23 @@
+object DataModule1: TDataModule1
+  OldCreateOrder = False
+  Height = 291
+  Width = 412
+  object RecsysConnection: TFDConnection
+    Params.Strings = (
+      'ConnectionDef=RECSYS')
+    Connected = True
+    LoginPrompt = False
+    Left = 323
+    Top = 114
+  end
+  object CadproTable: TFDQuery
+    Connection = RecsysConnection
+    Left = 307
+    Top = 208
+  end
+  object Cadven: TFDQuery
+    Connection = RecsysConnection
+    Left = 176
+    Top = 184
+  end
+end

@@ -1,0 +1,20 @@
+program api_recsys;
+
+uses
+  Vcl.Forms,
+  dm in 'dm.pas' {dmPrincipal: TDataModule},
+  Principal in 'Principal.pas' {Form3},
+  ProdutosController in 'controller\ProdutosController.pas',
+  LoginController in 'controller\LoginController.pas',
+  ClienteController in 'controller\ClienteController.pas';
+
+{$R *.res}
+
+begin
+ReportMemoryLeaksOnShutdown:=true;
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TdmPrincipal, dmPrincipal);
+  Application.CreateForm(TForm3, Form3);
+  Application.Run;
+end.
